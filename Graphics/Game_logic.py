@@ -17,6 +17,7 @@ BOMB = "bomb"
 EXPLOSION = "explosion"
 PLAYER = "player"
 
+# Will be replaced with UI later
 COLOR_MAP = {
     EMPTY: (200, 200, 200),
     WALL: (50, 50, 50),
@@ -82,16 +83,19 @@ class GameState:
     def update(self):
         now = time.time()
 
+        # Handle bomb explosions
         for bomb in self.bombs:
             if not bomb.exploded and now - bomb.placed_time >= BOMB_TIMER:
                 self.explode_bomb(bomb)
                 bomb.exploded = True
 
+        # Remove expired explosions
         self.explosions = [e for e in self.explosions if now - e.start_time < EXPLOSION_DURATION]
         for e in self.explosions:
             for x, y in e.positions:
                 self.grid[y][x] = EXPLOSION
 
+        # Clear old explosions
         for y in range(MAP_HEIGHT):
             for x in range(MAP_WIDTH):
                 if self.grid[y][x] == EXPLOSION:
@@ -125,6 +129,7 @@ class GameState:
 
 
 def main():
+    print("Arrows to move and Space to place bomb!")
     pygame.init()
     screen = pygame.display.set_mode((MAP_WIDTH * TILE_SIZE, MAP_HEIGHT * TILE_SIZE))
     pygame.display.set_caption("Single Player Bomberman")
