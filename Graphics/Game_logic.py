@@ -1,7 +1,7 @@
 import pygame
 import sys
 import time
-from Graphics.UI import render_game
+from UI import render_game
 
 
 # --- Constants ---

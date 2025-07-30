@@ -18,7 +18,7 @@ COLOR_BLOCK = (139, 69, 19)
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bomberman UI")
-spritesheet = pygame.image.load("roguelikeChar_transparent.png").convert_alpha()
+spritesheet = pygame.image.load("graphics/roguelikeChar_transparent.png").convert_alpha()
 SPRITE_TILE = 16
 MARGIN = 1
 
