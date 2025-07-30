@@ -1,16 +1,41 @@
 import socket
 import threading
 
-SERVER_IP = '127.0.0.1'
+SERVER_IP = '192.168.1.64'
 SERVER_PORT = 5555
+
+clients = []
+clients_lock = threading.Lock()
+
+def broadcast_message(sender_address, message):
+    with clients_lock:
+        disconnected_clients = []
+        for client_socket, client_address in clients:
+            if client_address != sender_address:
+                try:
+                    broadcast_msg = f"[{sender_address}]: {message}"
+                    client_socket.send(broadcast_msg.encode('utf-8'))
+                except:
+                    disconnected_clients.append((client_socket, client_address))
+
+        for client in disconnected_clients:
+            if client in clients:
+                clients.remove(client)
+                print(f"Removed disconnected client {client[1]}")
 
 def handle_client(client_socket, client_address):
     print(f"Client {client_address} connected.")
+
+    with clients_lock:
+        clients.append((client_socket, client_address))
     
     try:
         client_socket.send("Connected".encode('utf-8'))
     except:
         print(f"Failed {client_address}")
+        with clients_lock:
+            if (client_socket, client_address) in clients:
+                clients.remove((client_socket, client_address))
         client_socket.close()
         return
     
@@ -25,10 +50,16 @@ def handle_client(client_socket, client_address):
             
             response = f"Server received: {msg}"
             client_socket.send(response.encode('utf-8'))
+
+            broadcast_message(client_address, msg)
             
         except Exception as e:
             print(f"Error {client_address}: {e}")
             break
+
+    with clients_lock:
+        if (client_socket, client_address) in clients:
+            clients.remove((client_socket, client_address))
     
     print(f"Client {client_address} disconnected.")
     client_socket.close()
