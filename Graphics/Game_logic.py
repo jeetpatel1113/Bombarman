@@ -45,12 +45,18 @@ class Explosion:
 class GameState:
     def __init__(self, start_positions=START_POSITIONS):
         self.grid = self.generate_map()
-        self.players = {
-            pid: {"pos": [x, y], "alive": True}
-            for pid, (x, y) in enumerate(start_positions, start=1)
-        }
+        self.players = {}
         self.bombs = []
         self.explosions = []
+        self.start_positions = start_positions
+    
+    def add_player(self, player_id):
+        if player_id <= len(self.start_positions):
+            x, y = self.start_positions[player_id - 1]
+            self.players[player_id] = {"pos": [x, y], "alive": True}
+            print(f"Added player {player_id} at ({x}, {y}).")
+        else:
+            print("Error.")
 
     def generate_map(self):
         grid = [[EMPTY for _ in range(MAP_WIDTH)] for _ in range(MAP_HEIGHT)]
@@ -217,6 +223,7 @@ class GameState:
 def main():
     clock = pygame.time.Clock()
     game = GameState()
+    game.add_player(1)
 
     while True:
         for event in pygame.event.get():
