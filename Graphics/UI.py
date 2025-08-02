@@ -27,7 +27,7 @@ def get_char_image(row, col):
     y = row * (SPRITE_TILE + MARGIN)
     rect = pygame.Rect(x, y, SPRITE_TILE, SPRITE_TILE)
     image = spritesheet.subsurface(rect)
-    # 放大为 40x40
+
     return pygame.transform.scale(image, (TILE_SIZE, TILE_SIZE))
 
 player_imgs = [
@@ -81,3 +81,4 @@ def render_game(state):
                 ])
 
     pygame.display.flip()
+
