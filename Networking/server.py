@@ -31,13 +31,14 @@ class BombermanServer:
         with self.clients_lock:
             disconnected_clients = []
 
+            if isinstance(message, dict):
+                data = json.dumps(message) + '\n'
+            else:
+                data = str(message) + '\n'
+
             for client_socket, client_address, player_id in self.clients:
                 try:
-                    if isinstance(message, dict):
-                        data = json.dumps(message).encode('utf-8')
-                    else:
-                        data = str(message).encode('utf-8')
-                    client_socket.send(data)
+                    client_socket.send(data.encode('utf-8') )
                 except Exception as e:
                     print(f"Failed to send to {client_address}: {e}.")
                     disconnected_clients.append((client_socket, client_address, player_id))
@@ -51,10 +52,10 @@ class BombermanServer:
     def send_to_client(self, client_socket, message):
         try:
             if isinstance(message, dict):
-                data = json.dumps(message).encode('utf-8')
+                data = json.dumps(message) + '\n'
             else:
-                data = str(message).encode('utf-8')
-            client_socket.send(data)
+                data = str(message) + '\n'
+            client_socket.send(data.encode('utf-8'))
         except Exception as e:
             print(f"Failed to send to client: {e}.")
     
@@ -133,7 +134,6 @@ class BombermanServer:
         
         if player_id:
             self.disconnect_player(player_id)
-        print(f"Player {player_id} disconnected.")
         client_socket.close()
 
     def process_player_message(self, player_id, message):
