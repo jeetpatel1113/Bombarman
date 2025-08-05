@@ -2,7 +2,7 @@ import socket
 import threading
 import json
 import time
-from Game_logic import GameState
+from Graphics.game_logic import GameState
 
 SERVER_IP = '192.168.1.64'
 SERVER_PORT = 5555
