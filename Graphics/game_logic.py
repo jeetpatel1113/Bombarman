@@ -1,11 +1,10 @@
 import pygame
 import sys
 import time
-from UI import render_game
+from ui import UI
 
 
 # --- Constants ---
-TILE_SIZE = 30
 MAP_WIDTH = 13
 MAP_HEIGHT = 11
 BOMB_TIMER = 2
@@ -224,6 +223,7 @@ def main():
     clock = pygame.time.Clock()
     game = GameState()
     game.add_player(1)
+    game_ui = UI()
 
     while True:
         for event in pygame.event.get():
@@ -251,7 +251,7 @@ def main():
             time.sleep(0.2)
 
         game.update()
-        render_game(game.to_render_state())
+        game_ui.render_game(game.to_render_state())
         clock.tick(60)
 
 
