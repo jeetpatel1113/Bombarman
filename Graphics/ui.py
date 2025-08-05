@@ -22,7 +22,7 @@ class UI:
         pygame.init()
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Bomberman UI")
-        self.spritesheet = pygame.image.load("graphics/roguelikeChar_transparent.png").convert_alpha()
+        self.spritesheet = pygame.image.load("Graphics/roguelikeChar_transparent.png").convert_alpha()
 
         self.player_imgs = [
             self.get_char_image(0, 0),
