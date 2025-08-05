@@ -4,7 +4,7 @@ import json
 import time
 from Graphics.game_logic import GameState
 
-SERVER_IP = '192.168.1.64'
+SERVER_IP = 'localhost'
 SERVER_PORT = 5555
 
 class BombermanServer:
@@ -185,7 +185,7 @@ class BombermanServer:
         self.game_state = GameState()
         with self.clients_lock:
             for _, _, player_id in self.clients:
-                self.game_state.add_player_id(player_id)
+                self.game_state.add_player(player_id)
                 
         self.broadcast_to_all({
                 'type': 'game_reset',
