@@ -2,7 +2,6 @@ import pygame
 import socket
 import json
 import threading
-import sys
 from Graphics.ui import UI
 
 SERVER_IP = 'localhost'
@@ -16,25 +15,25 @@ class BombermanClient:
         self.player_id = None
         self.game_state = {}
         self.running = True
+        self.connected = False
 
     def connect_to_server(self):
         try:
             self.sock.connect((SERVER_IP, SERVER_PORT))
+            self.connected = True
             print(f"Connected to server at {SERVER_IP}:{SERVER_PORT}")
+            threading.Thread(target=self.listen_to_server, daemon=True).start()
         except Exception as e:
             print(f"Connection failed: {e}")
-            sys.exit()
-
-        # Start a thread to listen to the server
-        threading.Thread(target=self.listen_to_server, daemon=True).start()
+            self.running = False
 
     def listen_to_server(self):
-        while self.running:
+        while self.running and self.connected:
             try:
                 data = self.sock.recv(4096)
                 if not data:
                     print("Disconnected from server")
-                    self.running = False
+                    self.connected = False
                     break
 
                 message = json.loads(data.decode('utf-8'))
@@ -59,11 +58,14 @@ class BombermanClient:
 
             except Exception as e:
                 print(f"Error receiving data: {e}")
-                self.running = False
+                self.connected = False
+
+        self.running = False
 
     def send_input(self, action):
-        if self.player_id is None:
+        if self.player_id is None or not self.connected:
             return
+
         try:
             msg = {
                 'type': 'input',
@@ -73,18 +75,26 @@ class BombermanClient:
         except Exception as e:
             print(f"Failed to send input: {e}")
 
+    def close(self):
+        self.running = False
+        if self.connected:
+            try:
+                self.sock.close()
+            except:
+                pass
+        pygame.quit()
+
     def run(self):
         clock = pygame.time.Clock()
 
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
-                    pygame.quit()
-                    sys.exit()
+                    print("Quitting game.")
+                    self.close()
+                    return
 
             keys = pygame.key.get_pressed()
-
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 self.send_input("UP")
             elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
@@ -104,7 +114,8 @@ class BombermanClient:
 def main():
     client = BombermanClient()
     client.connect_to_server()
-    client.run()
+    if client.running:
+        client.run()
 
 if __name__ == "__main__":
     main()
