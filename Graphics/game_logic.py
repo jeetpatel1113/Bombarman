@@ -81,7 +81,7 @@ class GameState:
     def can_move_to(self, x, y, player_id):
         if not (0 <= x < MAP_WIDTH and 0 <= y < MAP_HEIGHT):
             return False
-        if self.grid[y][x] == WALL or self.grid[y][x] == BLOCK:
+        if self.grid[y][x] == WALL or self.grid[y][x] == BLOCK or self.grid[y][x] == BOMB:
             return False
 
         for pid, player in self.players.items():

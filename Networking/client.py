@@ -79,27 +79,31 @@ class BombermanClient:
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
-                    pygame.quit()
-                    sys.exit()
+                    print("Quitting game.")
+                    self.close()
+                    return
 
-            keys = pygame.key.get_pressed()
+            try:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_UP] or keys[pygame.K_w]:
+                    self.send_input("UP")
+                elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                    self.send_input("DOWN")
+                elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                    self.send_input("LEFT")
+                elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                    self.send_input("RIGHT")
+                elif keys[pygame.K_SPACE]:
+                    self.send_input("BOMB")
 
-            if keys[pygame.K_UP] or keys[pygame.K_w]:
-                self.send_input("UP")
-            elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                self.send_input("DOWN")
-            elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                self.send_input("LEFT")
-            elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                self.send_input("RIGHT")
-            elif keys[pygame.K_SPACE]:
-                self.send_input("BOMB")
+                if self.game_state:
+                    self.ui.render_game(self.game_state)
+            except pygame.error as e:
+                print(f"Pygame rendering error: {e}")
+                continue  # Skip this frame but stay running
 
-            if self.game_state:
-                self.ui.render_game(self.game_state)
+            clock.tick(60)
 
-            clock.tick(10)
 
 def main():
     client = BombermanClient()
