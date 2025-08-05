@@ -2,7 +2,6 @@ import pygame
 import socket
 import json
 import threading
-import sys
 from Graphics.ui import UI
 
 SERVER_IP = 'localhost'
@@ -23,7 +22,6 @@ class BombermanClient:
             print(f"Connected to server at {SERVER_IP}:{SERVER_PORT}")
         except Exception as e:
             print(f"Connection failed: {e}")
-            sys.exit()
 
         # Start a thread to listen to the server
         threading.Thread(target=self.listen_to_server, daemon=True).start()
