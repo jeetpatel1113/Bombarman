@@ -23,6 +23,8 @@ class UI:
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Bomberman UI")
         self.spritesheet = pygame.image.load("Graphics/roguelikeChar_transparent.png").convert_alpha()
+        self.explosion_sound = pygame.mixer.Sound("Graphics/Audio/bomb-explosion.mp3")
+        self.bomb_place_sound = pygame.mixer.Sound("Graphics/Audio/place-bomb.mp3")
 
         self.player_imgs = [
             self.get_char_image(0, 0),
@@ -84,3 +86,9 @@ class UI:
                     ])
 
         pygame.display.flip()
+
+    def play_sound(self, sound_type):
+        if sound_type == "explosion":
+            self.explosion_sound.play()
+        elif sound_type == "place_bomb":
+            self.bomb_place_sound.play()

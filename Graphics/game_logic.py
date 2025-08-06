@@ -1,8 +1,7 @@
 import pygame
 import sys
 import time
-from Graphics.ui import UI
-
+from Graphics.ui import UI  # Change to from ui import UI for single-player testing
 
 # --- Constants ---
 MAP_WIDTH = 13
@@ -48,7 +47,7 @@ class GameState:
         self.bombs = []
         self.explosions = []
         self.start_positions = start_positions
-    
+
     def add_player(self, player_id):
         if player_id <= len(self.start_positions):
             x, y = self.start_positions[player_id - 1]
@@ -112,9 +111,12 @@ class GameState:
         if self.grid[y][x] == EMPTY:
             self.grid[y][x] = BOMB
             self.bombs.append(Bomb(x, y, time.time()))
+            self._play_bomb = True
 
     def update(self):
         now = time.time()
+        self._play_bomb = False
+        self._play_explosion = False
 
         for bomb in self.bombs:
             if not bomb.exploded and now - bomb.placed_time >= BOMB_TIMER:
@@ -137,6 +139,7 @@ class GameState:
                 player["alive"] = False
 
     def explode_bomb(self, bomb):
+        self._play_explosion = True
         x, y = bomb.x, bomb.y
         affected = [(x, y)]
         self.grid[y][x] = EXPLOSION
@@ -178,6 +181,10 @@ class GameState:
             "flames": [{"x": x, "y": y} for e in self.explosions for x, y in e.positions],
             "walls": walls,
             "blocks": blocks,
+            "audio": {
+                "play_bomb": getattr(self, "_play_bomb", False),
+                "play_explosion": getattr(self, "_play_explosion", False),
+            }
         }
 
     @staticmethod
@@ -250,8 +257,15 @@ def main():
             game.apply_input(pid, "BOMB")
             time.sleep(0.2)
 
+        render_state = game.to_render_state()
         game.update()
-        game_ui.render_game(game.to_render_state())
+
+        if render_state["audio"]["play_bomb"]:
+            game_ui.play_sound("place_bomb")
+        if render_state["audio"]["play_explosion"]:
+            game_ui.play_sound("explosion")
+
+        game_ui.render_game(render_state)
         clock.tick(60)
 
 
