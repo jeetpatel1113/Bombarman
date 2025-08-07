@@ -115,8 +115,6 @@ class GameState:
 
     def update(self):
         now = time.time()
-        self._play_bomb = False
-        self._play_explosion = False
 
         for bomb in self.bombs:
             if not bomb.exploded and now - bomb.placed_time >= BOMB_TIMER:
@@ -162,6 +160,14 @@ class GameState:
         self.explosions.append(Explosion(affected, time.time()))
 
     def to_render_state(self):
+        # Capture the flags
+        play_bomb = getattr(self, "_play_bomb", False)
+        play_explosion = getattr(self, "_play_explosion", False)
+
+        # Now it's safe to reset
+        self._play_bomb = False
+        self._play_explosion = False
+
         walls, blocks = [], []
         for y, row in enumerate(self.grid):
             for x, t in enumerate(row):
@@ -182,8 +188,8 @@ class GameState:
             "walls": walls,
             "blocks": blocks,
             "audio": {
-                "play_bomb": getattr(self, "_play_bomb", False),
-                "play_explosion": getattr(self, "_play_explosion", False),
+                "play_bomb": play_bomb,
+                "play_explosion": play_explosion,
             }
         }
 

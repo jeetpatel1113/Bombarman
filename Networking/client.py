@@ -2,6 +2,7 @@ import pygame
 import socket
 import json
 import threading
+import time
 from Graphics.ui import UI
 
 SERVER_IP = 'localhost'
@@ -16,17 +17,31 @@ class BombermanClient:
         self.game_state = {}
         self.running = True
 
+        # Input throttling
+        self.last_input_time = 0
+        self.input_delay = {
+            "UP": 0.1,
+            "DOWN": 0.1,
+            "LEFT": 0.1,
+            "RIGHT": 0.1,
+            "BOMB": 0.2
+        }
+        self.last_action_time = {}
+
     def connect_to_server(self):
         try:
             self.sock.connect((SERVER_IP, SERVER_PORT))
             print(f"Connected to server at {SERVER_IP}:{SERVER_PORT}")
         except Exception as e:
             print(f"Connection failed: {e}")
+            self.running = False
+            return
 
         # Start a thread to listen to the server
         threading.Thread(target=self.listen_to_server, daemon=True).start()
 
     def listen_to_server(self):
+        buffer = ""
         while self.running:
             try:
                 data = self.sock.recv(4096)
@@ -35,31 +50,45 @@ class BombermanClient:
                     self.running = False
                     break
 
-                message = json.loads(data.decode('utf-8'))
+                buffer += data.decode('utf-8')
+                while '\n' in buffer:
+                    message_str, buffer = buffer.split('\n', 1)
+                    if message_str.strip() == '':
+                        continue
+                    message = json.loads(message_str)
 
-                if message['type'] == 'player_id':
-                    self.player_id = message['player_id']
-                    print(f"Assigned Player ID: {self.player_id}")
+                    if message['type'] == 'player_id':
+                        self.player_id = message['player_id']
+                        print(f"Assigned Player ID: {self.player_id}")
 
-                elif message['type'] == 'game_state':
-                    self.game_state = message['state']
+                    elif message['type'] == 'game_state':
+                        self.game_state = message['state']
 
-                elif message['type'] == 'game_over':
-                    print("Game Over!")
-                    winner = message.get("winner")
-                    if winner:
-                        print(f"Player {winner} wins!")
-                    else:
-                        print("It's a draw!")
+                    elif message['type'] == 'game_over':
+                        print("Game Over!")
+                        winner = message.get("winner")
+                        if winner:
+                            print(f"Player {winner} wins!")
+                        else:
+                            print("It's a draw!")
 
-                elif message['type'] == 'chat':
-                    print(f"Player {message['player_id']}: {message['message']}")
+                    elif message['type'] == 'chat':
+                        print(f"Player {message['player_id']}: {message['message']}")
 
             except Exception as e:
                 print(f"Error receiving data: {e}")
                 self.running = False
 
     def send_input(self, action):
+        now = time.time()
+        delay = self.input_delay.get(action)
+        last_time = self.last_action_time.get(action, 0)
+
+        if now - last_time < delay:
+            return  # throttle input
+
+        self.last_action_time[action] = now
+
         if self.player_id is None:
             return
         try:
@@ -67,7 +96,7 @@ class BombermanClient:
                 'type': 'input',
                 'action': action
             }
-            self.sock.send(json.dumps(msg).encode('utf-8'))
+            self.sock.send((json.dumps(msg) + '\n').encode('utf-8'))
         except Exception as e:
             print(f"Failed to send input: {e}")
 
@@ -78,7 +107,8 @@ class BombermanClient:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     print("Quitting game.")
-                    self.close()
+                    self.sock.close()
+                    pygame.quit()
                     return
 
             try:
@@ -95,7 +125,14 @@ class BombermanClient:
                     self.send_input("BOMB")
 
                 if self.game_state:
+
+                    if self.game_state["audio"]["play_bomb"]:
+                        self.ui.play_sound("place_bomb")
+                    if self.game_state["audio"]["play_explosion"]:
+                        self.ui.play_sound("explosion")
+
                     self.ui.render_game(self.game_state)
+
             except pygame.error as e:
                 print(f"Pygame rendering error: {e}")
                 continue  # Skip this frame but stay running
