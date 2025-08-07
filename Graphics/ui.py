@@ -71,19 +71,33 @@ class UI:
                                self.TILE_SIZE - 20)
             pygame.draw.ellipse(self.screen, self.COLOR_BOMB, rect)
 
+        # Arrow colors per player
+        arrow_colors = [
+            (0, 255, 64),     # Green for Player 1
+            (255, 0, 0),      # Red for Player 2
+            (0, 128, 255),    # Blue for Player 3
+            (255, 255, 0),    # Yellow for Player 4
+        ]
+
         # Draw players
         for i, (pid, pdata) in enumerate(state["players"].items()):
             if pdata["alive"]:
                 px = pdata["x"] * self.TILE_SIZE + (self.TILE_SIZE - 40) // 2
                 py = pdata["y"] * self.TILE_SIZE + (self.TILE_SIZE - 40) // 2
                 self.screen.blit(self.player_imgs[i % len(self.player_imgs)], (px, py))
+                try:
+                    player_num = int(pid[1:]) - 1
+                except:
+                    player_num = i
 
-                if pid == "p1":
-                    pygame.draw.polygon(self.screen, (0, 255, 64), [
-                        (px + 20 - 8, py - 8),
-                        (px + 20 + 8, py - 8),
-                        (px + 20, py + 8)
-                    ])
+                arrow_color = arrow_colors[player_num % len(arrow_colors)]
+
+                pygame.draw.polygon(self.screen, arrow_color, [
+                    (px + 20 - 8, py - 8),
+                    (px + 20 + 8, py - 8),
+                    (px + 20, py + 8)
+                ])
+
 
         pygame.display.flip()
 
