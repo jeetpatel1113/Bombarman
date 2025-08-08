@@ -78,4 +78,4 @@ Resources:
 - [Socket Programming](https://docs.python.org/3/library/socket.html)
 - [Threading](https://docs.python.org/3/library/threading.html)
 - [Time](https://docs.python.org/3/library/time.html)
-- CMPT 371 - Data Communications and Networking, [Simon Fraser University] (https://www.sfu.ca/)
+- CMPT 371 - Data Communications and Networking, [Simon Fraser University](https://www.sfu.ca/)
