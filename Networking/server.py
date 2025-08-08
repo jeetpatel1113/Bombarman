@@ -189,7 +189,7 @@ class BombermanServer:
                 alive_players = [pid for pid, player in self.game_state.players.items()
                                  if player['alive']]
                 
-                if len(alive_players) <= 1 and len(self.game_state.players) > 1:
+                if len(alive_players) <= 1 and len(self.game_state.players) > 1 and self.game_state.no_explosions():
                     winner = alive_players[0] if alive_players else None
                     self.broadcast_to_all({
                         'type': 'game_over',

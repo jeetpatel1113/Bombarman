@@ -231,6 +231,11 @@ class GameState:
         elif action == "BOMB":
             self.place_bomb(player_id)
 
+    def no_explosions(self):
+        if not self.explosions:
+            return True
+        return False
+
 
 def main():
     clock = pygame.time.Clock()
