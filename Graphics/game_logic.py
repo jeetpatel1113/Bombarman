@@ -92,6 +92,7 @@ class GameState:
         return True
 
     def move_player(self, player_id, dx, dy):
+        # Locks to ensure only one player can be on shared object (board tile)
         with self.lock:
             player = self.players[player_id]
             if not player["alive"]:
@@ -102,6 +103,7 @@ class GameState:
                 player["pos"] = [new_x, new_y]
 
     def place_bomb(self, player_id):
+        # Locks to ensure only one player can place bomb on shared object
         with self.lock:
             player = self.players[player_id]
             if not player["alive"]:
