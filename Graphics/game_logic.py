@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import threading
 from Graphics.ui import UI  # Change to from ui import UI for single-player testing
 
 # --- Constants ---
@@ -47,6 +48,7 @@ class GameState:
         self.bombs = []
         self.explosions = []
         self.start_positions = start_positions
+        self.lock = threading.Lock()
 
     def add_player(self, player_id):
         if player_id <= len(self.start_positions):
@@ -90,28 +92,30 @@ class GameState:
         return True
 
     def move_player(self, player_id, dx, dy):
-        player = self.players[player_id]
-        if not player["alive"]:
-            return
-        new_x = player["pos"][0] + dx
-        new_y = player["pos"][1] + dy
-        if self.can_move_to(new_x, new_y, player_id):
-            player["pos"] = [new_x, new_y]
+        with self.lock:
+            player = self.players[player_id]
+            if not player["alive"]:
+                return
+            new_x = player["pos"][0] + dx
+            new_y = player["pos"][1] + dy
+            if self.can_move_to(new_x, new_y, player_id):
+                player["pos"] = [new_x, new_y]
 
     def place_bomb(self, player_id):
-        player = self.players[player_id]
-        if not player["alive"]:
-            return
+        with self.lock:
+            player = self.players[player_id]
+            if not player["alive"]:
+                return
 
-        active_bombs = [b for b in self.bombs if not b.exploded and (b.x, b.y) == tuple(player["pos"])]
-        if active_bombs:
-            return
+            active_bombs = [b for b in self.bombs if not b.exploded and (b.x, b.y) == tuple(player["pos"])]
+            if active_bombs:
+                return
 
-        x, y = player["pos"]
-        if self.grid[y][x] == EMPTY:
-            self.grid[y][x] = BOMB
-            self.bombs.append(Bomb(x, y, time.time()))
-            self._play_bomb = True
+            x, y = player["pos"]
+            if self.grid[y][x] == EMPTY:
+                self.grid[y][x] = BOMB
+                self.bombs.append(Bomb(x, y, time.time()))
+                self._play_bomb = True
 
     def update(self):
         now = time.time()
