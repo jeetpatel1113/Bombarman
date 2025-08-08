@@ -16,9 +16,26 @@ class BombermanServer:
         self.clients_lock = threading.Lock()
         #Game setup
         self.game_state = GameState()
-        self.player_count = 0
         self.game_running = False
         self.max_players = 4
+        self.available_player_ids = list(range(1, self.max_players + 1))
+        self.used_player_ids = set()
+    
+    def get_next_player_id(self):
+        if not self.available_player_ids:
+            return None
+        player_id = self.available_player_ids.pop(0)
+        self.used_player_ids.add(player_id)
+        return player_id
+    
+    def release_player_id(self, player_id):
+        if player_id in self.used_player_ids:
+            self.used_player_ids.remove(player_id)
+            self.available_player_ids.append(player_id)
+            self.available_player_ids.sort()
+
+    def player_count(self):
+        return len(self.used_player_ids)    
     
     def broadcast_game_state(self):
         game_data = {
@@ -62,21 +79,22 @@ class BombermanServer:
     def disconnect_player(self, player_id):
         if player_id in self.game_state.players:
             self.game_state.players[player_id]['alive'] = False
-        self.player_count -= 1
+        
+        self.release_player_id(player_id)
         print(f"Player {player_id} disconnected.")
 
-        if self.player_count == 0:
+        if self.player_count() == 0:
             self.game_running = False
 
     def handle_client(self, client_socket, client_address):
         player_id = None
         #Assign player ID
         with self.clients_lock:
-            if self.player_count < self.max_players:
-                self.player_count += 1
-                player_id = self.player_count
+            player_id = self.get_next_player_id()
+            if player_id is not None:
                 self.clients.append((client_socket, client_address, player_id))
                 print(f"Player {player_id} connected from {client_address}.")
+                print(f"Current players: {self.player_count()}")
                 self.game_state.add_player(player_id)
             else:
                 try:
@@ -99,7 +117,7 @@ class BombermanServer:
             self.clean_client(client_socket, client_address, player_id)
             return
         
-        if self.player_count >= 2 and not self.game_running:
+        if self.player_count() >= 2 and not self.game_running:
             self.game_running = True
             self.broadcast_to_all({
                 'type': 'game_start',
@@ -164,7 +182,7 @@ class BombermanServer:
         while True:
             time.sleep(1/60)
 
-            if self.game_running and self.player_count > 0:
+            if self.game_running and self.player_count() > 0:
                 self.game_state.update()
                 self.broadcast_game_state()
 
