@@ -5,21 +5,17 @@
 
 Multiplayer game build by [Brendokim](https://www.google.com/search?q=https://github.com/brendokim), [Jeet](https://www.google.com/search?q=https://github.com/jeetpatel1113), [Leo](https://www.google.com/search?q=https://github.com/ljbds66), [Sam](https://www.google.com/search?q=https://github.com/SamShowkati) as a part of CMPT 371 Project, Group no. 22.
 
-Bombarman is a multiplayer game that combines classic arcade action with networking capabilities, allowing players to compete in a destructive arena. The goal is to strategically place bombs to destroy blocks and eliminate opponents.
+Bombarman is a multiplayer game 🎮 that combines classic arcade action with networking capabilities, allowing players to compete ⚔️ in a destructive arena. The goal is to strategically place bombs 💣 to destroy blocks and eliminate opponents.
 
-The project is developed in Python and uses Pygame for graphics and sockets for network communication. It's a great example of a simple but engaging multiplayer game built from the ground up.
+The project is developed in Python 💻 and uses Pygame for graphics and sockets for network communication. It's a great example of a simple but engaging multiplayer game built from the ground up.
 
 ## Table of Contents
-1. [Contant](#Contant)
-2. [Things we used](#things-we-used)
-3. [Application Features](#application-features)
-4. [Licence](#licence)
-5. [Acknowledgements](#acknowledgements)
+1. [Installation](#installation)
+2. [Application Features](#application-features)
+3. [Licence](#licence)
+4. [Acknowledgements](#acknowledgements)
 
-## Contant 
-To setup the project locally, follow the instructions below-
-
-### Installation
+## Installation
 1. Make sure you have the following libraries in python:
      - json
      - pygame
@@ -59,4 +55,27 @@ To setup the project locally, follow the instructions below-
 7. Wait for atleast 2 clients to join the server to start the game.
 8. Make sure you enjoy playing. 🙂
 
-   
+## Application Features
+
+<img width="1595" height="1021" alt="image" src="https://github.com/user-attachments/assets/b572a24c-0702-4f94-b1c6-4b9ec929996e" />
+
+It is a multiplayer game, super fun and competitive game. 🎉🎉🎉
+
+Basically you have to blow up other members in the team.🔥🔥🔥
+
+This project of ours shows **Networking, Socket Programming, Locking of Objects and Sharing Medium** in the same board.🛜 We used **TCP** to transfer messages back and forth 🤝, since every key is highly important.ℹ️
+
+We tried ourselves, and trust me, no better feeling than making and playing your own game. Here is a video of our accomplishment. Hope you enjoy.📽️
+// video
+
+## Licence
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
+
+## Acknowledgements
+Resources:
+     
+- [Pygame](https://www.pygame.org/docs/)
+- [Socket Programming](https://docs.python.org/3/library/socket.html)
+- [Threading](https://docs.python.org/3/library/threading.html)
+- [Time](https://docs.python.org/3/library/time.html)
+- CMPT 371 - Data Communications and Networking, [Simon Fraser University] (https://www.sfu.ca/)
