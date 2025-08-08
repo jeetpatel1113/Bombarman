@@ -5,8 +5,9 @@ import threading
 import time
 from Graphics.ui import UI
 
-SERVER_IP = 'localhost'
-SERVER_PORT = 5555
+# Server Configuration
+SERVER_IP = '192.168.1.64' # Server IP
+SERVER_PORT = 5555 # Server Port
 
 class BombermanClient:
     def __init__(self):

@@ -4,17 +4,18 @@ import json
 import time
 from Graphics.game_logic import GameState
 
-SERVER_IP = 'localhost'
-SERVER_PORT = 5555
+# Server Configuration
+SERVER_IP = '192.168.1.64' # Change to IPv4 address
+SERVER_PORT = 5555 # Port clients will connect to
 
 class BombermanServer:
     def __init__(self):
-        #Network setup
+        # Network setup
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.clients = []
         self.clients_lock = threading.Lock()
-        #Game setup
+        # Game setup
         self.game_state = GameState()
         self.game_running = False
         self.max_players = 4
@@ -47,7 +48,7 @@ class BombermanServer:
     def broadcast_to_all(self, message):
         with self.clients_lock:
             disconnected_clients = []
-
+            # Encode dicitonary as JSON string
             if isinstance(message, dict):
                 data = json.dumps(message) + '\n'
             else:
@@ -59,7 +60,7 @@ class BombermanServer:
                 except Exception as e:
                     print(f"Failed to send to {client_address}: {e}.")
                     disconnected_clients.append((client_socket, client_address, player_id))
-            
+            # Remove clients that disconnected during send
             for client in disconnected_clients:
                 if client in self.clients:
                     self.clients.remove(client)
@@ -88,7 +89,7 @@ class BombermanServer:
 
     def handle_client(self, client_socket, client_address):
         player_id = None
-        #Assign player ID
+        # Assign player ID
         with self.clients_lock:
             player_id = self.get_next_player_id()
             if player_id is not None:
@@ -106,7 +107,7 @@ class BombermanServer:
                     pass
                 client_socket.close()
                 return
-        #Send client their player ID
+        # Send client their player ID
         try:
             self.send_to_client(client_socket, {
                 'type': 'player_id',
@@ -123,7 +124,7 @@ class BombermanServer:
                 'type': 'game_start',
                 'message': 'Game starting!'
             })
-        #Main client loop
+        # Main client loop
         while True:
             try:
                 data = client_socket.recv(1024)
