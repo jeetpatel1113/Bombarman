@@ -6,7 +6,7 @@ import time
 from Graphics.ui import UI
 
 # Server Configuration
-SERVER_IP = '192.168.1.64' # Server IP
+SERVER_IP = 'localhost' # Server IP
 SERVER_PORT = 5555 # Server Port
 
 class BombermanClient:

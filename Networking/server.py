@@ -5,7 +5,7 @@ import time
 from Graphics.game_logic import GameState
 
 # Server Configuration
-SERVER_IP = '192.168.1.64' # Change to IPv4 address
+SERVER_IP = 'localhost' # Change to IPv4 address
 SERVER_PORT = 5555 # Port clients will connect to
 
 class BombermanServer:
