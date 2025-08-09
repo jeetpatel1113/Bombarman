@@ -66,7 +66,7 @@ Basically you have to blow up other members in the team.🔥🔥🔥
 This project of ours shows **Networking, Socket Programming, Locking of Objects and Sharing Medium** in the same board.🛜 We used **TCP** to transfer messages back and forth 🤝, since every key is highly important.ℹ️
 
 We tried ourselves, and trust me, no better feeling than making and playing your own game. Here is a video of our accomplishment. Hope you enjoy.📽️
-// video
+[Bombarman - SFU CMPT371 Group 22 Final Project Demo](https://www.youtube.com/watch?v=kovifcCMMUI&ab_channel=brendonKim)
 
 ## Licence
 Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
