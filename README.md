@@ -68,6 +68,9 @@ This project of ours shows **Networking, Socket Programming, Locking of Objects 
 We tried ourselves, and trust me, no better feeling than making and playing your own game. Here is a video of our accomplishment. Hope you enjoy.📽️
 [Bombarman - SFU CMPT371 Group 22 Final Project Demo](https://www.youtube.com/watch?v=kovifcCMMUI&ab_channel=brendonKim)
 
+[![Watch the video](https://img.youtube.com/vi/kovifcCMMUI/maxresdefault.jpg)](https://www.youtube.com/watch?v=kovifcCMMUI)
+
+
 ## Licence
 Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
 
