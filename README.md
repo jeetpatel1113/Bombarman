@@ -38,22 +38,28 @@ The project is developed in Python 💻 and uses Pygame for graphics and sockets
     ```bash
     git clone git@github.com:jeetpatel1113/Bombarman.git
     ```
-3. Change server's SERVER_IP and SERVER_PORT to your IPv4 address.
+3. In server.py, change SERVER_IP to your IPv4 address.
    ```vscode
-   SERVER_IP = 'localhost' // Change your localhost to your IPv4 address.
+   SERVER_IP = 'your-IPv4 address'
    SERVER_PORT = 5555
    ```
-4. From server's directory Bombarman ( .\..\Bombarman> ), run the following code to start your server:
+4. (Server host only) Forward TCP port 5555 on your router to your machine's IPv4 address so clients outside your network can connect.
+5. From the main directory ( .\..\Bombarman> ), run the following code to start your server:
    ```
    python -m Networking.server
    ```
-5. Now, your server has started, use the server's address in client and make sure it is on the same port on different machine.
-6. From client's directory Bombarman (.\..\Bombarman> ), run the following code to start your client:
+6. In client.py, change SERVER_IP to the server host's public IP address.
+   ```vscode
+   SERVER_IP = 'server-public-IP'
+   SERVER_PORT = 5555
+   ```
+   For the server host, change SERVER_IP to your IPv4 address.
+7. From the main directory (.\..\Bombarman> ), run the following code to start your client:
    ```
    python -m Networking.client
    ```
-7. Wait for atleast 2 clients to join the server to start the game.
-8. Make sure you enjoy playing. 🙂
+8. Wait for atleast 2 clients to join the server to start the game.
+9. Make sure you enjoy playing. 🙂
 
 ## Application Features
 
